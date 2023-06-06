@@ -6,7 +6,8 @@
 /* SUMÁRIO GERAL: - Criar vetor dinâmico
             - ver como mexe com arquivo
             - ver maneira de buscar no array pelo id e pegar o nome da struct 
-            - fazer os testes e adaptações para erros, por ex usar getchar ao inves de scanf e etc, tem q ver os slides do spatti */
+            - fazer os testes e adaptações para erros, por ex usar getchar ao inves de scanf e etc, tem q ver os slides do spatti
+            - usar ponteiro, tem q ver onde, vai ser na base dos testes, acredito q tenha que usar pra passar para as funções conseguirem alterar struct/vetor */
 
 
 //tem q ver se tem q adicionar return 0 nas funçoes
