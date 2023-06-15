@@ -39,21 +39,20 @@ void imprimirOpcoes(){
 
 }
 
-void addUsuario () {
+void addUsuario(int* numUsers) {
     usuarios novoUsuario;
     printf("\nEntre com nome, idade e saldo do novo usuário.\n");
     scanf("%s", novoUsuario.nome);
     scanf("%d", &novoUsuario.idade);
     scanf("%f", &novoUsuario.saldo);
-    contadorId++;
-    novoUsuario.id = contadorId;
-    userArraySize++;
-    dadosUsuarios = (usuarios*)realloc(dadosUsuarios, userArraySize * sizeof(usuarios));
-    //Adicionar a struct ao array
-    //Atualizar o arquivo de texto
+    (*numUsers)++;
+    dadosUsuarios = (usuarios*)realloc(dadosUsuarios, (*numUsers) * sizeof(usuarios));
+    novoUsuario.id = *numUsers;
+    dadosUsuarios[*numUsers - 1] = novoUsuario; // Adiciona o novo usuário ao vetor dinâmico
+    // Atualizar o arquivo de texto
     printf("\nUsuário adicionado com sucesso.\n");
-
 }
+
 
 
 void addVariosUsuarios(){
@@ -61,27 +60,25 @@ void addVariosUsuarios(){
     printf("\nEscreva a quantidade de usuários que deseja adicionar: ");
     scanf("%d", &qtdUsuarios);
     for(int i = 0; i < qtdUsuarios; i++){
-        addUsuario();
+        addUsuario(&userArraySize);
     }
 
 }
 
-void buscarUsuarioPorId() {
+usuarios* buscarUsuarioPorId(usuarios* dadosUsuarios) {
     int tempId;
     bool userFound = false;
     printf("\nDigite o ID do usuário a ser buscado: ");
     scanf("%d", &tempId);
     //procurar usuario no array pelo id;
-    if(userFound == true){
-        printf("arrumar depois\n");
-        //print informaçoes do usuario, tem q fazer uma maneira de ao encontrar o user por id, pegar o nome da struct dele
-        //printf("%d", struct.nome);
-        //printf("%d", struct.idade);
-        //printf("%d", struct.saldo);
+    for(int i = 0; i <= tempId; i++){
+        if(dadosUsuarios[i].id == tempId){
+            return &dadosUsuarios[i];
+        }
     }
-    else {
-        printf("\nUsuário não encontrado"); //vai jogar o usuario para digitar denovo? ou volta pro switch?
-    }
+    printf("\nUsuário não encontrado");
+    return NULL; //vai jogar o usuario para digitar denovo? ou volta pro switch?
+
 }
 
 
@@ -147,7 +144,8 @@ int main() {
     printf("Bem-vindo ao UaiBank\n");
 
     do{
-         printf("%ld", sizeof(dadosUsuarios)/sizeof(int));
+         
+
         
         imprimirOpcoes();
         scanf("%d", &opcaoSelecionada); //Mudar para a medida de segurança que o usuario só pode digitar 1 carac.
@@ -156,13 +154,13 @@ int main() {
                 free(dadosUsuarios);
                 break;
             case 1:
-                addUsuario();
+                addUsuario(&userArraySize);
                 break;
             case 2:
                 addVariosUsuarios();
                 break;
             case 3:
-                buscarUsuarioPorId();
+                buscarUsuarioPorId(dadosUsuarios);
                 break;
             case 4:
                 transferenciaEntreUsuarios();
