@@ -18,10 +18,14 @@ typedef struct {
     float saldo;
 } usuarios;
 
+
+//Inicializa um ponteiro do tipo struct usuarios apontando para nenhum lugar da memória (NULL), vai ser usado para o array.
 usuarios *dadosUsuarios = NULL;
+
+
 int contadorId = 0; //talvez tenha q passar ponteiro para as funções, n sei ainda, tem q testar
-int userArraySize = 0;
-int *ptrUserArraySize = &userArraySize;
+
+
 
 
 
@@ -39,17 +43,33 @@ void imprimirOpcoes(){
 
 }
 
-void addUsuario(int* numUsers) {
+void addUsuario() {
+    //Cria novo usuario do tipo de dado struct usuarios {idade, nome, saldo, id}
     usuarios novoUsuario;
+
+    //Recebe os dados do novo usuario
     printf("\nEntre com nome, idade e saldo do novo usuário.\n");
     scanf("%s", novoUsuario.nome);
     scanf("%d", &novoUsuario.idade);
     scanf("%f", &novoUsuario.saldo);
-    (*numUsers)++;
-    dadosUsuarios = (usuarios*)realloc(dadosUsuarios, (*numUsers) * sizeof(usuarios));
-    novoUsuario.id = *numUsers;
-    dadosUsuarios[*numUsers - 1] = novoUsuario; // Adiciona o novo usuário ao vetor dinâmico
-    // Atualizar o arquivo de texto
+
+    //Aumenta o contador
+    contadorId++;
+
+    //Define o ID do novo usuário para o contador atual.
+    novoUsuario.id = contadorId;
+
+    //Realoca memória para o tamanho do contador de IDS. Por exemplo; se tiverem 3 ids (0, 1, 2), quer dizer que precisamos de 3 espaços de memória, um vetor com indices [0, 1, 2]
+    dadosUsuarios = (usuarios*)realloc(dadosUsuarios, contadorId * sizeof(usuarios));
+
+
+    //Adiciona o novo usuario do tipo struct usuarios a posição (contadorId - 1) do array dinâmico.
+    //O primeiro usuario está sendo armazenado na posição 0 do array, tendo ID 1 (talvez possamos mudar isso para ficar sempre igual, mas por enquanto fica assim)
+    dadosUsuarios[contadorId - 1] = novoUsuario;
+
+    
+    // A FAZER: Atualizar o arquivo de texto
+
     printf("\nUsuário adicionado com sucesso.\n");
 }
 
@@ -60,7 +80,7 @@ void addVariosUsuarios(){
     printf("\nEscreva a quantidade de usuários que deseja adicionar: ");
     scanf("%d", &qtdUsuarios);
     for(int i = 0; i < qtdUsuarios; i++){
-        addUsuario(&userArraySize);
+        addUsuario();
     }
 
 }
@@ -135,8 +155,9 @@ void removerUsuario(){
 
 int main() {
     
-
-    dadosUsuarios = (usuarios*)malloc(userArraySize*sizeof(usuarios));
+    //Aloca a memoria inicial para o array dinâmico.
+    //Por enquanto começa em 0, quando tiver arquivos vai ter q puxar o tamanho q ja tem no arquivo
+    dadosUsuarios = (usuarios*)malloc(0*sizeof(usuarios));
 
     int opcaoSelecionada;
     //Carregar usuarios do arquivo
@@ -151,10 +172,13 @@ int main() {
         scanf("%d", &opcaoSelecionada); //Mudar para a medida de segurança que o usuario só pode digitar 1 carac.
         switch (opcaoSelecionada) {
             case 0:
-                free(dadosUsuarios);
                 break;
             case 1:
-                addUsuario(&userArraySize);
+                addUsuario();
+                printf("Nome do ENZO: %s\n", dadosUsuarios[0].nome);
+                printf("Idade do ENZO: %d\n", dadosUsuarios[0].idade);
+                printf("Saldo do ENZO: %f\n", dadosUsuarios[0].saldo);
+                printf("ID do ENZO: %d\n", dadosUsuarios[0].id);
                 break;
             case 2:
                 addVariosUsuarios();
@@ -174,6 +198,6 @@ int main() {
         }
     } while(opcaoSelecionada != 0);
 
-
+    free(dadosUsuarios);
     return 0;
 }
