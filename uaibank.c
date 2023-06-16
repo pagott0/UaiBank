@@ -85,19 +85,31 @@ void addVariosUsuarios(){
 
 }
 
-usuarios* buscarUsuarioPorId(usuarios* dadosUsuarios) {
+void buscarUsuarioPorId() {
+
+    //Recebe um ID que o usuario deseja buscar e armazena numa variavel temporaria.
     int tempId;
-    bool userFound = false;
     printf("\nDigite o ID do usuário a ser buscado: ");
     scanf("%d", &tempId);
-    //procurar usuario no array pelo id;
+
+
+    //Itera por todos os IDS, até o ID desejado. Checa se o ID de algum usuario no vetor é igual ao ID desejado.
     for(int i = 0; i <= tempId; i++){
+        //Se algum ID for compativel, printa o nome, a idade e o saldo.
         if(dadosUsuarios[i].id == tempId){
-            return &dadosUsuarios[i];
+            printf("NOME: %s\n", dadosUsuarios[i].nome);
+            printf("IDADE: %d\n", dadosUsuarios[i].idade);
+            printf("SALDO: %f\n", dadosUsuarios[i].saldo);
+            return;
         }
     }
+
+    //Se não existir nenhum ID compativel, printa "Usuario não encontrado"
     printf("\nUsuário não encontrado");
-    return NULL; //vai jogar o usuario para digitar denovo? ou volta pro switch?
+    return; //vai jogar o usuario para digitar denovo? ou volta pro switch?
+
+
+    //A FAZER: tem que ver se é importante retornar a struct (igual o GPT fez), ou se só printar os dados tá bom
 
 }
 
@@ -175,10 +187,14 @@ int main() {
                 break;
             case 1:
                 addUsuario();
-                printf("Nome do ENZO: %s\n", dadosUsuarios[0].nome);
+
+                //isso aqui era pra testar se estava realmente adicionando no array. pode apagar quando já tiver pronto.
+                /* printf("Nome do ENZO: %s\n", dadosUsuarios[0].nome);
                 printf("Idade do ENZO: %d\n", dadosUsuarios[0].idade);
                 printf("Saldo do ENZO: %f\n", dadosUsuarios[0].saldo);
-                printf("ID do ENZO: %d\n", dadosUsuarios[0].id);
+                printf("ID do ENZO: %d\n", dadosUsuarios[0].id); */
+
+
                 break;
             case 2:
                 addVariosUsuarios();
