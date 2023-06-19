@@ -131,7 +131,7 @@ void buscarUsuarioPorId() {
 
 
 void transferenciaEntreUsuarios(){
-    int id_origem, id_destino;
+    int id_origem, id_destino, indexOrigem, indexDestino;
     bool idOrigemEncontrado = false, idDestinoEncontrado = false;
     float valorTransf;
     printf("\nEntre com o ID de origem: ");
@@ -140,18 +140,33 @@ void transferenciaEntreUsuarios(){
     scanf("%d", &id_destino);
     printf("\nEntre com o valor a ser transferido: ");
     scanf("%f", &valorTransf);
+
+    if(id_origem > 0 && id_destino > 0){
+        //se os id existem, busca qual index do array contém eles.
+        for(int i = 0; i < contadorId; i++){
+            if(dadosUsuarios[i].id == id_origem){
+                indexOrigem = i;
+                idOrigemEncontrado = true;
+            }
+            if(dadosUsuarios[i].id == id_destino){
+                indexDestino = i;
+                idDestinoEncontrado = true;
+            }
+        }
+
+    }
+
     //procura os usuarios no array pelos ids, nao da pra usar a funçao buscarUsuario pq ela printa tds as informacoes do user na tela e isso eh desnecessario
     //dnv precisa arranjar uma maneira de buscar pelo id e pegar o nome da struct do user
     if( idOrigemEncontrado && idDestinoEncontrado){
-        printf("debug 2\n");
-        /* if(usuarioOrigem.saldo - valorTransf >= 0){ //tem q mudar pelo nome da struct dos usuarios
-            usuarioDeOrigem.saldo = usuarioDeOrigem.saldo - valorTransf; //tem q mudar pelo nome da struct dos usuarios
-            usuarioDeDestino.saldo = usuarioDeDestino.saldo + valorTransf; //tem q mudar pelo nome da struct dos usuarios
+        if(dadosUsuarios[indexOrigem].saldo - valorTransf >= 0){ 
+            dadosUsuarios[indexOrigem].saldo = dadosUsuarios[indexOrigem].saldo - valorTransf; 
+            dadosUsuarios[indexDestino].saldo = dadosUsuarios[indexDestino].saldo + valorTransf;
             printf("\nTransferência realizada com sucesso.\n"); //talvez printar o nome dos usuarios?
         }
         else {
             printf("\nSaldo insuficiente\n");
-        } */
+        }
     }
     else {
         printf("\nUsuário(s) não encontrado(s)\n");
