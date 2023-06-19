@@ -23,7 +23,10 @@ typedef struct {
 usuarios *dadosUsuarios = NULL;
 
 
+/* basicamente o maiorId é usado para ter controle de sempre criar usuarios com ids maiores que os ultimos criados, e o contadorId
+usado para ter controle do número de usuarios no array e na alocação de memória */
 int contadorId = 0; //talvez tenha q passar ponteiro para as funções, n sei ainda, tem q testar
+int maiorId = 0; 
 
 
 
@@ -55,9 +58,16 @@ void addUsuario() {
 
     //Aumenta o contador
     contadorId++;
+    if(contadorId > maiorId){    //se o contador for maior que o maiorId já criado, o maiorId passa a ser o contador atual.
+        maiorId = contadorId;
+    }
+    else {
+        maiorId++;   //se não for maior, soma um no maiorId, para definir o próximo id apartir dele.
+    }
 
     //Define o ID do novo usuário para o contador atual.
-    novoUsuario.id = contadorId;
+    //Usa o maiorId para evitar que Ids sejam repetidos ao remover usuarios e decrementar o contador.
+    novoUsuario.id = maiorId;
 
     //Realoca memória para o tamanho do contador de IDS. Por exemplo; se tiverem 3 ids (0, 1, 2), quer dizer que precisamos de 3 espaços de memória, um vetor com indices [0, 1, 2]
     dadosUsuarios = (usuarios*)realloc(dadosUsuarios, contadorId * sizeof(usuarios));
@@ -67,7 +77,13 @@ void addUsuario() {
     //O primeiro usuario está sendo armazenado na posição 0 do array, tendo ID 1 (talvez possamos mudar isso para ficar sempre igual, mas por enquanto fica assim)
     dadosUsuarios[contadorId - 1] = novoUsuario;
 
-    
+    //simulação para ver se tava adicionando e removendo corretamente. APAGAR DEPOIS.
+   //index //0 1 2 3
+   //id //1 4 5 6
+    //memoria 4 espaços
+    //contador 4, maior 6
+
+
     // A FAZER: Atualizar o arquivo de texto
 
     printf("\nUsuário adicionado com sucesso.\n");
@@ -147,20 +163,57 @@ void transferenciaEntreUsuarios(){
 }
 
 void removerUsuario(){
+    //id a ser removido
     int idRemovido;
+
+    //booleano para controlar se o id foi encontrado.
     bool idExiste = false;
+
+    //variavel para armazenar o index do usuario que deseja remover no array
+    int indexToRemove;
+
+    //recebe o id a ser removido
     printf("\nDigite o ID do usuário que você deseja remover: ");
     scanf("%d", &idRemovido);
-    //procurar o usuario no array
-    //remover usuario do array (como vou fazer isso? n sei)
-    //atualiazr arquivo de texto
-    if(idExiste){    //ver maneira de pegar struct do user pelo id
-        printf("\nUsuário removido com sucesso.\n");
+
+    //Se o id buscado for menor ou igual a 0, não tem porque buscar no array, visto que os ids começam em 1
+    if(idRemovido > 0){
+        //se o id existe, busca qual index do array contém ele.
+        for(int i = 0; i < contadorId; i++){
+            if(dadosUsuarios[i].id == idRemovido){
+                indexToRemove = i;
+                idExiste = true;
+            }
+        }
+
     }
+
+
+    if(idExiste == true){
+        //uma vez que achou o index, itera apartir desse index até o contadorId, movendo cada dado uma casa a esquerda no array.
+        for(int i = indexToRemove; i < contadorId; i++){
+            dadosUsuarios[i] = dadosUsuarios[i+1];
+        }
+        
+        //decrementa o contadorId para ter controle do número de usuarios
+        contadorId--;
+
+        //realoca memória com um usuário a menos.
+        dadosUsuarios = (usuarios*)realloc(dadosUsuarios, contadorId * sizeof(usuarios));
+
+        printf("Usuário removido com sucesso\n");
+
+    }
+    //se não achou o index com id igual ao id desejado, o booleano idExiste se mantém em falso, e printa usuário não encontrado.
     else {
-        printf("\nUsuário não encontrado.\n");
+        printf("Usuário não encontrado\n");
     }
+
+    //TODO: atualizar arquivo de texto.
     
+    // 1, 2, 3   ultimo id: 3 maiorId: 3, contadorId: 3
+    //removo o 2:   1, 3,   contador q tava em 3, foi decrementado para 2, maiorId se mantem em 3;
+    // quando eu for adicionar,   1, 4, 3,     adiciona na posição 2
 
 
 }
