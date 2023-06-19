@@ -134,6 +134,7 @@ void transferenciaEntreUsuarios(){
     int id_origem, id_destino, indexOrigem, indexDestino;
     bool idOrigemEncontrado = false, idDestinoEncontrado = false;
     float valorTransf;
+
     printf("\nEntre com o ID de origem: ");
     scanf("%d", &id_origem);
     printf("\nEntre com o ID de destino: ");
@@ -141,6 +142,7 @@ void transferenciaEntreUsuarios(){
     printf("\nEntre com o valor a ser transferido: ");
     scanf("%f", &valorTransf);
 
+    //Como os ids começam em 1, caso o id de origem ou de destino desejados sejam igual ou menor que 0, não precisa buscar, pois não vai existir.
     if(id_origem > 0 && id_destino > 0){
         //se os id existem, busca qual index do array contém eles.
         for(int i = 0; i < contadorId; i++){
@@ -156,9 +158,9 @@ void transferenciaEntreUsuarios(){
 
     }
 
-    //procura os usuarios no array pelos ids, nao da pra usar a funçao buscarUsuario pq ela printa tds as informacoes do user na tela e isso eh desnecessario
-    //dnv precisa arranjar uma maneira de buscar pelo id e pegar o nome da struct do user
+    //Caso tenha encontrado os IDS, os booleanos de controle vão estar true.
     if( idOrigemEncontrado && idDestinoEncontrado){
+        //checa se o saldo de origem é suficiente.
         if(dadosUsuarios[indexOrigem].saldo - valorTransf >= 0){ 
             dadosUsuarios[indexOrigem].saldo = dadosUsuarios[indexOrigem].saldo - valorTransf; 
             dadosUsuarios[indexDestino].saldo = dadosUsuarios[indexDestino].saldo + valorTransf;
@@ -172,7 +174,6 @@ void transferenciaEntreUsuarios(){
         printf("\nUsuário(s) não encontrado(s)\n");
     }
 
-    //atualizar array de usuarios
     //atualizar arquivo
 
 }
