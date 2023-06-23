@@ -59,7 +59,20 @@ void carregarUsuariosArquivo() {
     fclose(arquivo);
 }
 
+void carregarUsuariosArray(){
+    FILE *arquivo = fopen("bancodados.txt", "w");
+    if (arquivo == NULL){
+        printf("Erro ao abrir o arquivo\n");
+        system("pause");
+        exit(1);
+    }
 
+    for(int i = 0; i < contadorId; i++){
+        fprintf(arquivo, "%s %d %.2f %d\n", dadosUsuarios[i].nome, dadosUsuarios[i].idade, dadosUsuarios[i].saldo, dadosUsuarios[i].id);
+    }
+
+    fclose(arquivo);
+}
 
 
 
@@ -313,6 +326,8 @@ int main() {
                 break;
         }
     } while(opcaoSelecionada != 0);
+
+    carregarUsuariosArray();
 
     free(dadosUsuarios);
     return 0;
