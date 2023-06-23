@@ -4,16 +4,7 @@
 #include <stdbool.h>
 
 /* SUMÁRIO GERAL:
-            - ver como mexe com arquivo
-                - add usuario
-                - remover usuario
-                - transferir e atualizar saldo
-                - buscar usuario
-                - add todos usuarios do arquivo de txt no array no inicio do programa
-                - atualizar o arquivo de texto com tds usuarios do array no fim do programa
             - fazer os testes e adaptações para erros, por ex usar getchar ao inves de scanf e etc, tem q ver os slides do spatti
-            - corrigir erro de tentar buscar id q nao existe e dar segmentation fault
-            - checar se o ponteiro é NULL ao tentar alocar memoria
  */
 
 //tem q ver se tem q adicionar return 0 nas funçoes
@@ -59,6 +50,8 @@ void carregarUsuariosArquivo() {
     fclose(arquivo);
 }
 
+
+//Carrega os usuarios do array dinâmico pro banco de dados txt, roda no fim do código. Atualiza as adições, remoções e transferências.
 void carregarUsuariosArray(){
     FILE *arquivo = fopen("bancodados.txt", "w");
     if (arquivo == NULL){
@@ -74,8 +67,14 @@ void carregarUsuariosArray(){
     fclose(arquivo);
 }
 
-
-
+//Checa se o ponteiro aponta para o nulo, ou seja, quando a memória é insuficiente. Passa o ponteiro do array como parâmetro.
+void checkMemory(usuarios* usersStorage){
+    if(usersStorage = NULL){
+        printf("Memória insuficiente\n");
+        system("pause");
+        exit(1);
+    }
+}
 
 
 void imprimirOpcoes(){
@@ -113,6 +112,7 @@ void addUsuario() {
 
     //Realoca memória para o tamanho do contador de IDS. Por exemplo; se tiverem 3 ids (0, 1, 2), quer dizer que precisamos de 3 espaços de memória, um vetor com indices [0, 1, 2]
     dadosUsuarios = (usuarios*)realloc(dadosUsuarios, contadorId * sizeof(usuarios));
+    checkMemory(dadosUsuarios);
 
 
     //Adiciona o novo usuario do tipo struct usuarios a posição (contadorId - 1) do array dinâmico.
@@ -150,6 +150,12 @@ void buscarUsuarioPorId() {
     printf("\nDigite o ID do usuário a ser buscado: ");
     scanf("%d", &tempId);
 
+    //Se o id for maior que o maiorId já cadastrado, ou menor que 0, retorna, pois os IDS começam em 1, e nunca vai ter um ID maior do que o maior já cadastrado.
+    if(tempId > maiorId || tempId <= 0){
+        printf("O ID não existe");
+        return;
+
+    }
 
     //Itera por todos os IDS, até o ID desejado. Checa se o ID de algum usuario no vetor é igual ao ID desejado.
     for(int i = 0; i <= tempId; i++){
@@ -258,6 +264,7 @@ void removerUsuario(){
 
         //realoca memória com um usuário a menos.
         dadosUsuarios = (usuarios*)realloc(dadosUsuarios, contadorId * sizeof(usuarios));
+        checkMemory(dadosUsuarios);
 
         printf("Usuário removido com sucesso\n");
 
@@ -267,7 +274,6 @@ void removerUsuario(){
         printf("Usuário não encontrado\n");
     }
 
-    //TODO: atualizar arquivo de texto.
     
     // 1, 2, 3   ultimo id: 3 maiorId: 3, contadorId: 3
     //removo o 2:   1, 3,   contador q tava em 3, foi decrementado para 2, maiorId se mantem em 3;
@@ -281,6 +287,7 @@ int main() {
     //Aloca a memoria inicial para o array dinâmico.
     //Por enquanto começa em 0, quando tiver arquivos vai ter q puxar o tamanho q ja tem no arquivo
     dadosUsuarios = (usuarios*)malloc(0*sizeof(usuarios));
+    checkMemory(dadosUsuarios);
 
     carregarUsuariosArquivo(); //Carrega os usuários do banco de dados para o array dinâmico.
 
