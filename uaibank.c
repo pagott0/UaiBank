@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-/* SUMÁRIO GERAL:
+/* SUMÁRIO GERAL: TODO
             - fazer os testes e adaptações para erros, por ex usar getchar ao inves de scanf e etc, tem q ver os slides do spatti
+                -tratar a leitura no adicionar usuario, por exemplo se ele digitar mais de 100 chars
  */
 
 // tem q ver se tem q adicionar return 0 nas funçoes
@@ -152,6 +153,7 @@ void addUsuario()
     // A FAZER: Atualizar o arquivo de texto
 
     printf("\nUsuário adicionado com sucesso.\n");
+    printf("ID do novo usuário: %d\n", novoUsuario.id);
 }
 
 void addVariosUsuarios()
@@ -268,7 +270,11 @@ void removerUsuario()
 
     // recebe o id a ser removido
     printf("\nDigite o ID do usuário que você deseja remover: ");
-    scanf("%d", &idRemovido);
+    if (scanf("%d", &idRemovido) != 1)
+    {
+        printf("Erro ao ler o saldo do usuário.\n");
+        return;
+    }
 
     // Se o id buscado for menor ou igual a 0, não tem porque buscar no array, visto que os ids começam em 1
     if (idRemovido > 0)
