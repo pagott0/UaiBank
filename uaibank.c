@@ -112,9 +112,7 @@ void addUsuario()
     novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // Remove the newline character
 
 
-    // Clear the input buffer to avoid issues with subsequent inputs
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) {}
+
 
     // Lê a idade do novo usuário com tratamento de erro
     printf("Idade: ");
@@ -385,6 +383,7 @@ int main()
             printf("\nOpção inválida.\n");
             break;
         }
+        fflush(stdin); //Limpar buffer pro getchar
     } while (opcaoSelecionada != 0);
 
     carregarUsuariosArray();
