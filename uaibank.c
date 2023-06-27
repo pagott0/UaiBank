@@ -5,7 +5,7 @@
 
 /* SUMÁRIO GERAL: TODO
             - fazer os testes e adaptações para erros, por ex usar getchar ao inves de scanf e etc, tem q ver os slides do spatti
-                -tratar a leitura no adicionar usuario, por exemplo se ele digitar mais de 100 chars
+                -quando adiciona usuario com espaço no nome, da problema na leitura do arquivo, ele acaba não somando o contador e adiciona com id antigo.
  */
 
 // tem q ver se tem q adicionar return 0 nas funçoes
@@ -93,6 +93,7 @@ void imprimirOpcoes()
     printf("5. Remover usuário\n");
 }
 
+
 void addUsuario()
 {
     // Cria novo usuario do tipo de dado struct usuarios {idade, nome, saldo, id}
@@ -100,14 +101,23 @@ void addUsuario()
 
     // Recebe os dados do novo usuario
     printf("\nEntre com nome, idade e saldo do novo usuário.\n");
+
     // Lê o nome do novo usuário com tratamento de erro para alocação de memória
-    if (scanf("%s", novoUsuario.nome) != 1)
-    {
+    printf("Nome: ");
+    fflush(stdin); // Clear the input buffer
+    if (fgets(novoUsuario.nome, sizeof(novoUsuario.nome), stdin) == NULL) {
         printf("Erro ao ler o nome do usuário.\n");
         return;
     }
+    novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // Remove the newline character
+
+
+    // Clear the input buffer to avoid issues with subsequent inputs
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {}
 
     // Lê a idade do novo usuário com tratamento de erro
+    printf("Idade: ");
     if (scanf("%d", &novoUsuario.idade) != 1)
     {
         printf("Erro ao ler a idade do usuário.\n");
@@ -115,6 +125,7 @@ void addUsuario()
     }
 
     // Lê o saldo do novo usuário com tratamento de erro
+    printf("Saldo: ");
     if (scanf("%f", &novoUsuario.saldo) != 1)
     {
         printf("Erro ao ler o saldo do usuário.\n");
@@ -155,6 +166,7 @@ void addUsuario()
     printf("\nUsuário adicionado com sucesso.\n");
     printf("ID do novo usuário: %d\n", novoUsuario.id);
 }
+
 
 void addVariosUsuarios()
 {
@@ -337,7 +349,12 @@ int main()
     {
 
         imprimirOpcoes();
-        scanf("%d", &opcaoSelecionada); // Mudar para a medida de segurança que o usuario só pode digitar 1 carac.
+        opcaoSelecionada = getchar();
+
+        int c;
+        while ( (c = getchar()) != '\n' && c != EOF ) { }     //Limpa o buffer (tira o enter e o \n)
+
+        opcaoSelecionada = opcaoSelecionada -'0';  //Converte de char pra int
         switch (opcaoSelecionada)
         {
         case 0:
