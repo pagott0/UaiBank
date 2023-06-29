@@ -2,6 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <locale.h>
+#include <windows.h>
+
+//LEMBRETE: UM BANCO DE DADOS TXT CHAMADO: bancodados.txt  DEVE SER CRIADO NA PASTA JUNTO DO CÓDIGO PARA EVITAR PROBLEMAS. OBRIGADO.
 
 /* SUMÁRIO GERAL: TODO
             - fazer os testes e adaptações para erros, por ex usar getchar ao inves de scanf e etc, tem q ver os slides do spatti
@@ -330,6 +334,15 @@ void removerUsuario()
 
 int main()
 {
+    //Essas 6 linhas de código, junto com o include local.h e windows.h, servem para printar corretamente os acentos. Testei usando o setlocale e não funcionou, apenas desse jeito.
+    // Define o valor das páginas de código UTF8 e default do Windows   
+    UINT CPAGE_UTF8 = 65001;
+    UINT CPAGE_DEFAULT = GetConsoleOutputCP();
+
+    // Define codificação como sendo UTF-8
+    SetConsoleOutputCP(CPAGE_UTF8);
+
+
 
     // Aloca a memoria inicial para o array dinâmico.
     // Por enquanto começa em 0, quando tiver arquivos vai ter q puxar o tamanho q ja tem no arquivo

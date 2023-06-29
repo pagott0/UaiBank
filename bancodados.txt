@@ -8,6 +8,4 @@ pp 5 1.00 7
 oo 4 1.00 8
 paie 10 15.00 9
 eui 1 51.00 10
-lucas teodoro 10 1555.00 11
-scooby doo be doo baby 10 15.00 12
-quem sou eu bola de fogo, o calor ta de matar 15 22.00 14
+pernalonga 18 1509.00 12
