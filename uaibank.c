@@ -119,10 +119,18 @@ void addUsuario()
     // Lê o nome do novo usuário com tratamento de erro para alocação de memória
     printf("Nome: ");
     fflush(stdin); // Clear the input buffer
-    if (fgets(novoUsuario.nome, sizeof(novoUsuario.nome), stdin) == NULL) {
+    if (fgets(novoUsuario.nome, 100, stdin) == NULL) {
         printf("Erro ao ler o nome do usuário.\n");
         return;
     }
+    
+    //limpa o buffer para evitar problemas no proximo input. TODO: TALVEZ ADD UMA MSG DE ERRO E RETURN QUANDO PASSA DE 100 CARACTERES
+    char *p;
+            if(p=strchr(novoUsuario.nome, '\n')){//check exist newline
+                *p = 0;
+            } else {
+                scanf("%*[^\n]");scanf("%*c");//clear upto newline
+            }
     novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // Remove the newline character
 
 
