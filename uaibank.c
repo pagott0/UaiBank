@@ -14,6 +14,14 @@
 
 // tem q ver se tem q adicionar return 0 nas funçoes
 
+void clearScreen(){
+#ifdef _WIN32
+    system("cls");
+#elif __linux__
+    system("clear");
+#endif
+}
+
 typedef struct
 {
     char nome[100];
@@ -89,6 +97,7 @@ void checkMemory(usuarios *usersStorage)
 
 void imprimirOpcoes()
 {
+
     printf("\n0. Fechar\n");
     printf("1. Adicionar usuário\n");
     printf("2. Adicionar vários usuários\n");
@@ -100,6 +109,7 @@ void imprimirOpcoes()
 
 void addUsuario()
 {
+
     // Cria novo usuario do tipo de dado struct usuarios {idade, nome, saldo, id}
     usuarios novoUsuario;
 
@@ -125,12 +135,20 @@ void addUsuario()
         printf("Erro ao ler a idade do usuário.\n");
         return;
     }
+    if(novoUsuario.idade <= 0){
+        printf("Idade inválida, entre com um número maior do que 0\n");
+        return;
+    }
 
     // Lê o saldo do novo usuário com tratamento de erro
     printf("Saldo: ");
     if (scanf("%f", &novoUsuario.saldo) != 1)
     {
         printf("Erro ao ler o saldo do usuário.\n");
+        return;
+    }
+    if(novoUsuario.saldo <= 0){
+        printf("Saldo inválida, entre com um número maior do que 0\n");
         return;
     }
 
@@ -172,6 +190,7 @@ void addUsuario()
 
 void addVariosUsuarios()
 {
+
     int qtdUsuarios;
     printf("\nEscreva a quantidade de usuários que deseja adicionar: ");
     scanf("%d", &qtdUsuarios);
@@ -228,6 +247,10 @@ void transferenciaEntreUsuarios()
     scanf("%d", &id_destino);
     printf("\nEntre com o valor a ser transferido: ");
     scanf("%f", &valorTransf);
+    if(valorTransf <= 0 ){
+        printf("Saldo inválido, entre com um número maior que 0\n");
+        return;
+    }
 
     // Como os ids começam em 1, caso o id de origem ou de destino desejados sejam igual ou menor que 0, não precisa buscar, pois não vai existir.
     if (id_origem > 0 && id_destino > 0)
@@ -315,9 +338,15 @@ void removerUsuario()
         // decrementa o contadorId para ter controle do número de usuarios
         contadorId--;
 
+        if(contadorId == 0){
+            dadosUsuarios = (usuarios *)realloc(dadosUsuarios, 0);
+        }
+        else {
+            dadosUsuarios = (usuarios *)realloc(dadosUsuarios, contadorId * sizeof(usuarios));
+            checkMemory(dadosUsuarios);
+        }
         // realoca memória com um usuário a menos.
-        dadosUsuarios = (usuarios *)realloc(dadosUsuarios, contadorId * sizeof(usuarios));
-        checkMemory(dadosUsuarios);
+
 
         printf("Usuário removido com sucesso\n");
     }
@@ -334,13 +363,9 @@ void removerUsuario()
 
 int main()
 {
-    //Essas 6 linhas de código, junto com o include local.h e windows.h, servem para printar corretamente os acentos. Testei usando o setlocale e não funcionou, apenas desse jeito.
-    // Define o valor das páginas de código UTF8 e default do Windows   
-    UINT CPAGE_UTF8 = 65001;
-    UINT CPAGE_DEFAULT = GetConsoleOutputCP();
+    setlocale(LC_ALL, "Portuguese");
 
-    // Define codificação como sendo UTF-8
-    SetConsoleOutputCP(CPAGE_UTF8);
+
 
 
 
