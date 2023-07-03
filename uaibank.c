@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <locale.h>
 #include <windows.h>
+#include <ctype.h>
 
 //LEMBRETE: UM BANCO DE DADOS TXT CHAMADO: bancodados.txt  DEVE SER CRIADO NA PASTA JUNTO DO CÓDIGO PARA EVITAR PROBLEMAS. OBRIGADO.
 
@@ -14,13 +15,6 @@
 
 // tem q ver se tem q adicionar return 0 nas funçoes
 
-void clearScreen(){
-#ifdef _WIN32
-    system("cls");
-#elif __linux__
-    system("clear");
-#endif
-}
 
 typedef struct
 {
@@ -134,7 +128,15 @@ void addUsuario()
     novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // Remove the newline character
 
 
-
+    for(int i = 0; i < strlen(novoUsuario.nome); i++){
+        int tempCheck;
+        tempCheck = isalpha(novoUsuario.nome[i]);
+        if(tempCheck == 0){
+            printf("Um ou mais caracteres digitados não podem ser utilizado no nome, tente novamente apenas com letras do alfabeto.\n");
+            system("pause");
+            return;
+        }
+    }
 
     // Lê a idade do novo usuário com tratamento de erro
     printf("Idade: ");
