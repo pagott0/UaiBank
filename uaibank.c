@@ -20,7 +20,7 @@ typedef struct
 {
     char nome[100];
     int idade, id;
-    float saldo;
+    double saldo;  //Note que aqui usei double, pois ao usar float estava tendo erro de precisão em números muito grandes.
 } usuarios;
 
 // Inicializa um ponteiro do tipo struct usuarios apontando para nenhum lugar da memória (NULL), vai ser usado para o array.
@@ -45,7 +45,7 @@ void carregarUsuariosArquivo()
     usuarios newUser;
 
     // O fscanf retorna a quantidade de atribuições bem sucedidas. Logo, se conseguir atribuir nome, idade, saldo e id, retornará 4, e assim, fará as atribuições e continuará o loop
-    while (fscanf(arquivo, "%s %d %f %d", newUser.nome, &newUser.idade, &newUser.saldo, &newUser.id) == 4)
+    while (fscanf(arquivo, "%s %d %lf %d", newUser.nome, &newUser.idade, &newUser.saldo, &newUser.id) == 4)
     {
         contadorId++;
         if (contadorId > maiorId)
@@ -113,8 +113,17 @@ void addUsuario()
     // Lê o nome do novo usuário com tratamento de erro para alocação de memória
     printf("Nome: ");
     fflush(stdin); // Clear the input buffer
-    if (fgets(novoUsuario.nome, 100, stdin) == NULL) {
+    if (fgets(novoUsuario.nome, sizeof(novoUsuario.nome), stdin) == NULL) {
         printf("Erro ao ler o nome do usuário.\n");
+        return;
+    }
+
+    //Checa se o usuário digitou mais de 100 carac., se sim, retorna.
+    //Note que checa se é maior do que 98 caracteres, para assim se prevenir de erros, visto que o limite do novoUsuario.nome é 100.
+    int temp = 0;
+    temp = strlen(novoUsuario.nome);
+    if(temp >= 98) { 
+        printf("Você não pode cadastrar um usuário com nome com mais de 100 caractéres, tente novamente\n");
         return;
     }
     
@@ -127,14 +136,17 @@ void addUsuario()
             }
     novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // Remove the newline character
 
-
+    //Checagem para ver se o usuario não digitou números ou caracteres especiais no nome. 
     for(int i = 0; i < strlen(novoUsuario.nome); i++){
         int tempCheck;
-        tempCheck = isalpha(novoUsuario.nome[i]);
-        if(tempCheck == 0){
-            printf("Um ou mais caracteres digitados não podem ser utilizado no nome, tente novamente apenas com letras do alfabeto.\n");
-            system("pause");
-            return;
+        if(novoUsuario.nome[i] != ' ') {
+            tempCheck = isalpha(novoUsuario.nome[i]);  //Função isalpha ve se o carac. está no alfabeto, retorna 0 se não estiver.
+            if(tempCheck == 0){
+                printf("Um ou mais caracteres digitados não podem ser utilizado no nome, tente novamente apenas com letras do alfabeto.\n");
+                system("pause");
+                return;
+            }
+
         }
     }
 
@@ -152,7 +164,7 @@ void addUsuario()
 
     // Lê o saldo do novo usuário com tratamento de erro
     printf("Saldo: ");
-    if (scanf("%f", &novoUsuario.saldo) != 1)
+    if (scanf("%lf", &novoUsuario.saldo) != 1)
     {
         printf("Erro ao ler o saldo do usuário.\n");
         return;
