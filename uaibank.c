@@ -3,17 +3,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <locale.h>
-#include <windows.h>
 #include <ctype.h>
 
 //LEMBRETE: UM BANCO DE DADOS TXT CHAMADO: bancodados.txt  DEVE SER CRIADO NA PASTA JUNTO DO CÓDIGO PARA EVITAR PROBLEMAS. OBRIGADO.
 
-/* SUMÁRIO GERAL: TODO
-            - fazer os testes e adaptações para erros, por ex usar getchar ao inves de scanf e etc, tem q ver os slides do spatti
-                -quando adiciona usuario com espaço no nome, da problema na leitura do arquivo, ele acaba não somando o contador e adiciona com id antigo.
- */
-
-// tem q ver se tem q adicionar return 0 nas funçoes
 
 
 typedef struct
@@ -28,7 +21,7 @@ usuarios *dadosUsuarios = NULL;
 
 /* basicamente o maiorId é usado para ter controle de sempre criar usuarios com ids maiores que os ultimos criados, e o contadorId
 usado para ter controle do número de usuarios no array e na alocação de memória */
-int contadorId = 0; // talvez tenha q passar ponteiro para as funções, n sei ainda, tem q testar
+int contadorId = 0; 
 int maiorId = 0;
 
 // Função para puxar os usuarios do arquivo para o array dinâmico
@@ -103,7 +96,8 @@ void imprimirOpcoes()
 
 void addUsuario()
 {
-
+    
+    
     // Cria novo usuario do tipo de dado struct usuarios {idade, nome, saldo, id}
     usuarios novoUsuario;
 
@@ -127,14 +121,14 @@ void addUsuario()
         return;
     }
     
-    //limpa o buffer para evitar problemas no proximo input. TODO: TALVEZ ADD UMA MSG DE ERRO E RETURN QUANDO PASSA DE 100 CARACTERES
+    //limpa o buffer para evitar problemas no proximo input. 
     char *p;
-            if(p=strchr(novoUsuario.nome, '\n')){//check exist newline
+            if(p=strchr(novoUsuario.nome, '\n')){
                 *p = 0;
             } else {
-                scanf("%*[^\n]");scanf("%*c");//clear upto newline
+                scanf("%*[^\n]");scanf("%*c");
             }
-    novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; // Remove the newline character
+    novoUsuario.nome[strcspn(novoUsuario.nome, "\n")] = '\0'; 
 
     //Checagem para ver se o usuario não digitou números ou caracteres especiais no nome. 
     for(int i = 0; i < strlen(novoUsuario.nome); i++){
@@ -170,7 +164,7 @@ void addUsuario()
         return;
     }
     if(novoUsuario.saldo <= 0){
-        printf("Saldo inválida, entre com um número maior do que 0\n");
+        printf("Saldo inválido, entre com um número maior do que 0\n");
         return;
     }
 
@@ -197,16 +191,13 @@ void addUsuario()
     // O primeiro usuario está sendo armazenado na posição 0 do array, tendo ID 1 (talvez possamos mudar isso para ficar sempre igual, mas por enquanto fica assim)
     dadosUsuarios[contadorId - 1] = novoUsuario;
 
-    // simulação para ver se tava adicionando e removendo corretamente. APAGAR DEPOIS.
-    // index //0 1 2 3
-    // id //1 4 5 6
-    // memoria 4 espaços
-    // contador 4, maior 6
 
-    // A FAZER: Atualizar o arquivo de texto
 
     printf("\nUsuário adicionado com sucesso.\n");
     printf("ID do novo usuário: %d\n", novoUsuario.id);
+
+    int c;
+    while ( (c = getchar()) != '\n' && c != EOF ) { }     //Limpa o buffer (tira o enter e o \n)
 }
 
 
@@ -215,7 +206,16 @@ void addVariosUsuarios()
 
     int qtdUsuarios;
     printf("\nEscreva a quantidade de usuários que deseja adicionar: ");
-    scanf("%d", &qtdUsuarios);
+    if (scanf("%d", &qtdUsuarios) != 1)     //Isso serve para ver se a leitura do scanf foi feita corretamente, se foi, retorna 1 e segue normalmente.
+    {
+        printf("Erro ao ler a quantidade, tente novamente apenas com números\n");
+        return;
+    }
+
+    fflush(stdin);
+    int c;
+    while ( (c = getchar()) != '\n' && c != EOF ) { }     //Limpa o buffer (tira o enter e o \n)
+
     for (int i = 0; i < qtdUsuarios; i++)
     {
         addUsuario();
@@ -228,12 +228,19 @@ void buscarUsuarioPorId()
     // Recebe um ID que o usuario deseja buscar e armazena numa variavel temporaria.
     int tempId;
     printf("\nDigite o ID do usuário a ser buscado: ");
-    scanf("%d", &tempId);
+    if (scanf("%d", &tempId) != 1)
+    {
+        printf("Erro ao ler o ID, tente novamente apenas com números\n");
+        return;
+    }
 
     // Se o id for maior que o maiorId já cadastrado, ou menor que 0, retorna, pois os IDS começam em 1, e nunca vai ter um ID maior do que o maior já cadastrado.
     if (tempId > maiorId || tempId <= 0)
     {
         printf("O ID não existe");
+        fflush(stdin);
+        int c;
+        while ( (c = getchar()) != '\n' && c != EOF ) { }
         return;
     }
 
@@ -246,15 +253,22 @@ void buscarUsuarioPorId()
             printf("NOME: %s\n", dadosUsuarios[i].nome);
             printf("IDADE: %d\n", dadosUsuarios[i].idade);
             printf("SALDO: %f\n", dadosUsuarios[i].saldo);
+
+            fflush(stdin); //Limpar buffer. Sim, eu sei que deveria ter criado uma função com essas 3 linhas já que usei muito elas (e provavelmente deveria ter usado mais)
+            int c;
+            while ( (c = getchar()) != '\n' && c != EOF ) { }
+
             return;
         }
     }
 
     // Se não existir nenhum ID compativel, printa "Usuario não encontrado"
     printf("\nUsuário não encontrado");
-    return; // vai jogar o usuario para digitar denovo? ou volta pro switch?
+    return; 
 
-    // A FAZER: tem que ver se é importante retornar a struct (igual o GPT fez), ou se só printar os dados tá bom
+
+    int c;
+    while ( (c = getchar()) != '\n' && c != EOF ) { }     //Limpa o buffer (tira o enter e o \n)
 }
 
 void transferenciaEntreUsuarios()
@@ -313,7 +327,7 @@ void transferenciaEntreUsuarios()
         printf("\nUsuário(s) não encontrado(s)\n");
     }
 
-    // atualizar arquivo
+
 }
 
 void removerUsuario()
@@ -378,9 +392,6 @@ void removerUsuario()
         printf("Usuário não encontrado\n");
     }
 
-    // 1, 2, 3   ultimo id: 3 maiorId: 3, contadorId: 3
-    // removo o 2:   1, 3,   contador q tava em 3, foi decrementado para 2, maiorId se mantem em 3;
-    // quando eu for adicionar,   1, 4, 3,     adiciona na posição 2
 }
 
 int main()
@@ -388,18 +399,14 @@ int main()
     setlocale(LC_ALL, "Portuguese");
 
 
-
-
-
     // Aloca a memoria inicial para o array dinâmico.
-    // Por enquanto começa em 0, quando tiver arquivos vai ter q puxar o tamanho q ja tem no arquivo
     dadosUsuarios = (usuarios *)malloc(0 * sizeof(usuarios));
     checkMemory(dadosUsuarios);
 
     carregarUsuariosArquivo(); // Carrega os usuários do banco de dados para o array dinâmico.
 
     int opcaoSelecionada;
-    // Carregar usuarios do arquivo
+
 
     printf("Bem-vindo ao UaiBank\n");
 
@@ -419,13 +426,6 @@ int main()
             break;
         case 1:
             addUsuario();
-
-            // isso aqui era pra testar se estava realmente adicionando no array. pode apagar quando já tiver pronto.
-            /* printf("Nome do ENZO: %s\n", dadosUsuarios[0].nome);
-            printf("Idade do ENZO: %d\n", dadosUsuarios[0].idade);
-            printf("Saldo do ENZO: %f\n", dadosUsuarios[0].saldo);
-            printf("ID do ENZO: %d\n", dadosUsuarios[0].id); */
-
             break;
         case 2:
             addVariosUsuarios();
